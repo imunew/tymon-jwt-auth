@@ -13,7 +13,9 @@ use Illuminate\Http\Response;
 class HttpHelper
 {
     /** Disabled constructor */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * @param Request $request
