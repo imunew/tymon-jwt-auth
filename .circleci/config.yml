@@ -18,17 +18,14 @@ jobs:
       - run:
           name: Install dependencies
           command: composer install
-          working_directory: laravel
       - run:
           name: CS-Fixer
           command: composer cs-fixer-check
-          working_directory: laravel
       - run:
           name: PHPUnit
           command: |
             mkdir -p /tmp/coverage-html
             composer test -- --coverage-html /tmp/coverage-html
-          working_directory: laravel
       - store_artifacts:
           path: /tmp/coverage-html
 
