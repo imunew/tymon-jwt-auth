@@ -2,6 +2,7 @@
 
 namespace Imunew\JWTAuth\Resources;
 
+use Imunew\JWTAuth\Helpers\HttpHelper;
 use Imunew\JWTAuth\ValueObjects\JwtToken;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -33,15 +34,6 @@ class AuthResource extends JsonResource
     public function toResponse($request)
     {
         $response = parent::toResponse($request);
-        $response->withCookie(cookie(
-            config('jwt-auth.cookie.key'),
-            $this->resource->accessToken,
-            config('jwt.refresh_ttl'), // minutes
-            null, // path
-            '', // domain
-            $request->getScheme() === 'https', // secure
-            true // httpOnly
-        ));
-        return $response;
+        return HttpHelper::respondWithCookie($request, $response, $this->resource->accessToken);
     }
 }

@@ -3,7 +3,6 @@
 namespace Tests\Providers;
 
 use Tests\TestCase;
-use Tymon\JWTAuth\Http\Parser\AuthHeaders;
 use Tymon\JWTAuth\Http\Parser\Cookies;
 use Tymon\JWTAuth\JWTAuth;
 

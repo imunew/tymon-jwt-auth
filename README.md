@@ -27,7 +27,7 @@ Set `JWT_AUTH_COOKIE_KEY` environment variable to change the cookie name.
 JWT_AUTH_COOKIE_KEY={cookie name here}
 ```
 
-Set `JWT_AUTH_AUTH_HEADER_ENABLED` environment variable to enable the `AuthHeaders` parser
+Set `JWT_AUTH_AUTH_HEADER_ENABLED` environment variable to enable the `AuthHeaders` parser.
 
 ```envfile
 JWT_AUTH_AUTH_HEADER_ENABLED=true
