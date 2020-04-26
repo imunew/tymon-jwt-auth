@@ -7,6 +7,8 @@ This is the Laravel package to extend [tymon/jwt-auth](https://packagist.org/pac
 - Made the `AuthHeaders` parser optional (Default: disabled)
 - Prefer the `Cookies` parser
 - Made the cookie name changeable
+- Add `AuthResource` (with cookie)
+- Add `RefreshJwtToken` middleware (with cookie)
 
 ## Install
 ```bash
@@ -31,4 +33,58 @@ Set `JWT_AUTH_AUTH_HEADER_ENABLED` environment variable to enable the `AuthHeade
 
 ```envfile
 JWT_AUTH_AUTH_HEADER_ENABLED=true
+```
+
+## Use `AuthResource`
+Returning `AuthResource` sets JWT token in cookie.
+
+```php
+// App\Http\Controllers\Auth\Login
+
+    public function __invoke(LoginRequest $request)
+    {
+        $credentials = $request->only(['login_id', 'password']);
+        if (! $token = $this->jwtGuard->attempt($credentials)) {
+            throw new AuthenticationException();
+        }
+
+        return new AuthResource(new JwtToken($token, $this->factory->getTTL() * 60));
+    }
+```
+
+## Use `RefreshJwtToken`
+
+Add `\Imunew\JWTAuth\Middleware\RefreshJwtToken::class` before `\App\Http\Middleware\Authenticate::class`.
+
+```php
+// App\Http\Kernel
+
+    protected $middlewarePriority = [
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Imunew\JWTAuth\Middleware\RefreshJwtToken::class,
+        \App\Http\Middleware\Authenticate::class,
+        \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        \Illuminate\Session\Middleware\AuthenticateSession::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        \Illuminate\Auth\Middleware\Authorize::class,
+    ];
+```
+
+Add `\Imunew\JWTAuth\Middleware\RefreshJwtToken::class` to `$middlewareGroups`.
+
+```php
+// App\Http\Kernel
+
+    protected $middlewareGroups = [
+        'web' => [
+            // ...
+        ],
+
+        'api' => [
+            'throttle:60,1',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Imunew\JWTAuth\Middleware\RefreshJwtToken::class,
+        ]
+    ];
 ```
