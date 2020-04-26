@@ -6,6 +6,7 @@
       "email": "imunew@gmail.com"
     }
   ],
+  "license": "MIT",
   "require": {
     "php": "^7.0",
     "tymon/jwt-auth": "^1.0",
