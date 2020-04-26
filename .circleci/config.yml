@@ -1,0 +1,39 @@
+version: 2
+
+jobs:
+  test:
+    docker:
+      - image: php:7.3
+    steps:
+      - run:
+          name: Install packages and PHP extensions
+          command: |
+            apt-get update
+            apt-get install -y git libzip-dev unzip
+            docker-php-ext-install zip
+      - checkout
+      - run:
+          name: Install composer
+          command: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+      - run:
+          name: Install dependencies
+          command: composer install
+          working_directory: laravel
+      - run:
+          name: CS-Fixer
+          command: composer cs-fixer-check
+          working_directory: laravel
+      - run:
+          name: PHPUnit
+          command: |
+            mkdir -p /tmp/coverage-html
+            composer test -- --coverage-html /tmp/coverage-html
+          working_directory: laravel
+      - store_artifacts:
+          path: /tmp/coverage-html
+
+workflows:
+  version: 2
+  build-workflow:
+    jobs:
+      - test

@@ -1,0 +1,49 @@
+{
+  "name": "imunew/tymon-jwt-auth",
+  "authors": [
+    {
+      "name": "imunew",
+      "email": "imunew@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.0",
+    "tymon/jwt-auth": "^1.0",
+    "illuminate/support": "^7.8"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^2.16",
+    "orchestra/testbench": "^5.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Imunew\\JWTAuth\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Imunew\\JWTAuth\\Providers\\ServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "scripts": {
+    "cs-fixer-check": [
+      "vendor/bin/php-cs-fixer fix --dry-run -v"
+    ],
+    "cs-fixer-fix": [
+      "vendor/bin/php-cs-fixer fix --diff -v"
+    ],
+    "test": [
+      "phpdbg -qrr vendor/bin/phpunit"
+    ]
+  }
+}
