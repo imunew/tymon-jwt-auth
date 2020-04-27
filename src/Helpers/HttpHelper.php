@@ -29,10 +29,10 @@ class HttpHelper
             config('jwt-auth.cookie.key'),
             $authToken,
             config('jwt.refresh_ttl'), // minutes
-            null, // path
-            '', // domain
+            config('session.path'), // path
+            config('session.domain'), // domain
             $request->getScheme() === 'https', // secure
-            true // httpOnly
+            config('session.http_only') // httpOnly
         ));
     }
 }
