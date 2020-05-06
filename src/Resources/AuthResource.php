@@ -34,6 +34,8 @@ class AuthResource extends JsonResource
     public function toResponse($request)
     {
         $response = parent::toResponse($request);
-        return HttpHelper::respondWithCookie($request, $response, $this->resource->accessToken);
+        $httpHelper = app(HttpHelper::class);
+        assert($httpHelper instanceof HttpHelper);
+        return $httpHelper->respondWithCookie($request, $response, $this->resource->accessToken);
     }
 }

@@ -12,27 +12,41 @@ use Illuminate\Http\Response;
  */
 class HttpHelper
 {
-    /** Disabled constructor */
-    private function __construct()
-    {
-    }
-
     /**
      * @param Request $request
      * @param Response|JsonResponse $response
      * @param string $authToken
      * @return Response|JsonResponse
      */
-    public static function respondWithCookie(Request $request, $response, string $authToken)
+    public function respondWithCookie(Request $request, $response, string $authToken)
     {
         return $response->withCookie(cookie(
             config('jwt-auth.cookie.key'),
             $authToken,
             config('jwt.refresh_ttl'), // minutes
             config('session.path'), // path
-            config('session.domain'), // domain
+            self::getCookieDomain($request), // domain
             $request->getScheme() === 'https', // secure
             config('session.http_only') // httpOnly
         ));
+    }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
+    private function getCookieDomain(Request $request)
+    {
+        $domain = config('session.domain');
+        $allowSubDomain = config('jwt-auth.cookie.allow-sub-domain');
+        if (!empty($domain) && !$allowSubDomain) {
+            return $domain;
+        }
+        $domain = $host = $request->getHost();
+        $parts = explode('.', $host);
+        if (count($parts) > 1) {
+            $domain = '.'. implode('.', array_slice($parts, 1));
+        }
+        return $domain;
     }
 }

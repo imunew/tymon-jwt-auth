@@ -4,6 +4,7 @@ namespace Tests\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Imunew\JWTAuth\Helpers\HttpHelper;
 use Imunew\JWTAuth\Middleware\RefreshJwtToken;
 use Symfony\Component\HttpFoundation\Cookie;
 use Tests\TestCase;
@@ -19,7 +20,7 @@ class RefreshJwtTokenTest extends TestCase
      */
     public function refresh_success()
     {
-        $middleware = new RefreshJwtToken(FakeJwtAuth::create());
+        $middleware = new RefreshJwtToken(FakeJwtAuth::create(), app(HttpHelper::class));
         $response = $middleware->handle(Request::create('/api/tests'), function (Request $request) {
             return response()->json();
         });
@@ -36,7 +37,7 @@ class RefreshJwtTokenTest extends TestCase
      */
     public function refresh_fail_by_invalid_token()
     {
-        $middleware = new RefreshJwtToken(FakeJwtAuth::create(false, true));
+        $middleware = new RefreshJwtToken(FakeJwtAuth::create(false, true), app(HttpHelper::class));
         $response = $middleware->handle(Request::create('/api/tests'), function (Request $request) {
             return response()->json();
         });
@@ -50,7 +51,7 @@ class RefreshJwtTokenTest extends TestCase
      */
     public function refresh_fail_by_refresh_expired()
     {
-        $middleware = new RefreshJwtToken(FakeJwtAuth::create(true, false, true));
+        $middleware = new RefreshJwtToken(FakeJwtAuth::create(true, false, true), app(HttpHelper::class));
         $response = $middleware->handle(Request::create('/api/tests'), function (Request $request) {
             return response()->json();
         });

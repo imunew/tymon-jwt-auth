@@ -11,9 +11,24 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 use Tymon\JWTAuth\JWT;
+use Tymon\JWTAuth\JWTAuth;
 
 class RefreshJwtToken extends BaseMiddleware
 {
+    /** @var HttpHelper */
+    private $httpHelper;
+
+    /**
+     * RefreshJwtToken constructor.
+     * @param JWTAuth $auth
+     * @param HttpHelper $httpHelper
+     */
+    public function __construct(JWTAuth $auth, HttpHelper $httpHelper)
+    {
+        parent::__construct($auth);
+        $this->httpHelper = $httpHelper;
+    }
+
     /**
      * @param Request $request
      * @param Closure $next
@@ -49,6 +64,6 @@ class RefreshJwtToken extends BaseMiddleware
         $newToken = $jwt->refresh();
         $request->cookies->set(config('jwt-auth.cookie.key'), $newToken);
         $response = $next($request);
-        return HttpHelper::respondWithCookie($request, $response, $newToken);
+        return $this->httpHelper->respondWithCookie($request, $response, $newToken);
     }
 }
